@@ -1,7 +1,0 @@
-"0",""
-"0","ggplot(dati, aes(x = factor(V2036), y = V3014, fill = factor(V2036))) +"
-"0","  geom_boxplot() +"
-"0","  labs(x = ""Sesso (1=Uomini, 2=Donne)"", y = ""Età"","
-"0","       title = ""Distribuzione età per sesso"") +"
-"0","  theme_minimal() +"
-"0","  theme(legend.position = ""none"")"
