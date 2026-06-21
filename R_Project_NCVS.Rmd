@@ -1,7 +1,7 @@
 ---
 title: "National Crime Victimization Survey 2023 (NCVS)"
 author: "Olga Shopieva, Andrea Forneris, Alessandro Gargivolo"
-subtitle: Statistical Analysis using R
+subtitle: Analisi statistica con R
 output: word_document
 ---
 
