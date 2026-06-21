@@ -1,14 +1,8 @@
 ---
-title: "National Crime Victimization Survey (NCVS)"
-author: "Olga Shopieva  \nAndrea Forneris  \nAlessandro Gargivolo\n"
+title: "National Crime Victimization Survey 2023 (NCVS)"
+author: "Olga Shopieva, Andrea Forneris, Alessandro Gargivolo"
 subtitle: Statistical Analysis using R
-output:
-  pdf_document:
-    toc: true
-    toc_depth: '2'
-  word_document:
-    toc: true
-    toc_depth: 2
+output: word_document
 ---
 
 ```{r Caricamento delle librerie, echo=FALSE}
@@ -16,6 +10,7 @@ library(tidyverse)
 library(haven)
 library(dplyr)
 library(ggplot2)
+library(kableExtra) 
 ```
 
 
@@ -54,6 +49,41 @@ ggplot(dati, aes(x = factor(V2036), y = V3014, fill = factor(V2036))) +
 ```
 ### Interpretazione
 Il confronto tra i due gruppi evidenzia una distribuzione dell'età molto simile. La mediana risulta leggermente superiore per le donne, mentre l'intervallo interquartile è quasi identico. Non emergono differenze sostanziali nella dispersione dell'età tra uomini e donne.
+
+
+## Intervalli di confidenza e Test (Media età nel campione)
+Gli intervalli di confidenza per l'età media sono stati calcolati a tre livelli (90%, 95%, 99%), sul campione totale e per sesso.
+```{r, echo=FALSE}
+# IC per tutta la popolazione
+livelli <- c(0.90, 0.95, 0.99)
+
+ic_totale <- t(sapply(livelli, function(conf) {
+  t.test(dati$V3014, conf.level = conf)$conf.int
+}))
+colnames(ic_totale) <- c("Inferiore", "Superiore")
+rownames(ic_totale) <- paste0(livelli * 100, "%")
+
+kable(as.data.frame(ic_totale), caption = "IC per l'età media — campione totale")
+
+# IC separati per sesso
+ic_uomini <- t(sapply(livelli, function(conf) {
+  t.test(dati$V3014[dati$V3018 == 1], conf.level = conf)$conf.int
+}))
+ic_donne <- t(sapply(livelli, function(conf) {
+  t.test(dati$V3014[dati$V3018 == 2], conf.level = conf)$conf.int
+}))
+
+colnames(ic_uomini) <- c("Inferiore", "Superiore")
+colnames(ic_donne)  <- c("Inferiore", "Superiore")
+rownames(ic_uomini) <- paste0(livelli * 100, "%")
+rownames(ic_donne)  <- paste0(livelli * 100, "%")
+
+kable(as.data.frame(ic_uomini), caption = "IC per l'età media — Uomini")
+kable(as.data.frame(ic_donne),  caption = "IC per l'età media — Donne")
+```
+### Interpretazione
+All'aumentare del livello di confidenza l'intervallo si allarga: per il campione totale si passa da [44,27 – 44,87] al 90% a [44,10 – 45,04] al 99%.
+Uomini e donne mostrano età medie simili (44,3 vs 44,9 anni).
 
 
 ## Denunce alla polizia per genere
