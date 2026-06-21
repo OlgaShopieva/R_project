@@ -5,7 +5,7 @@ subtitle: Statistical Analysis using R
 output: word_document
 ---
 
-```{r Caricamento delle librerie, echo=FALSE}
+```{r Caricamento delle librerie, echo=TRUE}
 library(tidyverse)
 library(haven)
 library(dplyr)
@@ -14,7 +14,7 @@ library(kableExtra)
 ```
 
 
-```{r Importazione dei dati, echo=FALSE}
+```{r Importazione dei dati, echo=TRUE}
 
 dati <- read_sas("ncvs_subset.sas7bdat")
 
@@ -27,7 +27,7 @@ Questa sezione presenta una panoramica generale del dataset NCVS. Attraverso sta
 
 ## Statistiche descrittive
 Per ottenere una prima panoramica del dataset viene utilizzata la funzione `summary()`, che restituisce le principali statistiche descrittive delle variabili numeriche e permette di individuare eventuali valori anomali o codifiche particolari.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 
 summary(dati)
 
@@ -38,7 +38,7 @@ Le statistiche descrittive mostrano che il dataset comprende variabili socio-dem
 
 ## Distribuzione dell'età per sesso
 Per confrontare la distribuzione dell'età tra uomini e donne viene utilizzato un boxplot.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 
 ggplot(dati, aes(x = factor(V2036), y = V3014, fill = factor(V2036))) +
   geom_boxplot() +
@@ -53,7 +53,7 @@ Il confronto tra i due gruppi evidenzia una distribuzione dell'età molto simile
 
 ## Intervalli di confidenza e Test (Media età nel campione)
 Gli intervalli di confidenza per l'età media sono stati calcolati a tre livelli (90%, 95%, 99%), sul campione totale e per sesso.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 # IC per tutta la popolazione
 livelli <- c(0.90, 0.95, 0.99)
 
@@ -88,7 +88,7 @@ Uomini e donne mostrano età medie simili (44,3 vs 44,9 anni).
 
 ## Denunce alla polizia per genere
 L'obiettivo di questa analisi è confrontare il comportamento di uomini e donne rispetto alla decisione di denunciare il reato alla polizia.
-```{r Denunce alla polizia per genere, echo=FALSE}
+```{r Denunce alla polizia per genere, echo=TRUE}
 
 # 1. Rimuovere i valori NA
 dati_polizia <- dati %>%
@@ -114,7 +114,7 @@ Il grafico mostra la distribuzione delle denunce nei due gruppi. Le barre consen
 
 ## Attacchi medi per genere e cittadinanza
 Dopo aver eliminato i valori mancanti e le categorie residue, viene calcolato il numero medio di attacchi per ciascuna combinazione di genere e cittadinanza.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 
 report_attacchi <- dati %>%
   # 1. Pulizia dei dati: rimuovere i valori NA per tutte e tre le variabili ed escludere il codice 8 e 998(Residue)
@@ -171,7 +171,7 @@ La tabella permette di individuare eventuali differenze tra gruppi socio-demogra
 
 ## Distribuzione delle vittime per tipologia di reato
 Il grafico seguente confronta il numero di vittime registrate per tre differenti categorie di reato presenti nel dataset.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 
 crimini <- tibble(
   tipo = c("Furto", "Aggressione",
@@ -202,9 +202,9 @@ L'obiettivo di questa sezione è verificare se esista una relazione tra l'età d
 
 ## Visualizzazione preliminare
 Come primo passo viene rappresentata graficamente la relazione tra età e numero medio di attacchi.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 
-# 1. Step 1. Preparazione e Visualizzazione
+# 1. Preparazione e Visualizzazione
 dati_regressione <- dati %>%
   filter(!is.na(V3014) & !is.na(V3043)) %>%
   select(Età = V3014, Attacchi = V3043)
@@ -217,7 +217,7 @@ ggplot(dati_plot, aes(x = Età, y = Media_Attacchi)) +
   geom_point(color = "darkblue") +
   geom_smooth(method=lm, color="red", se=TRUE) +
   labs(
-    title = " Step 1. Visualizzare la relazione tra età e attacchi",
+    title = "Visualizzare la relazione tra età e attacchi",
     x = "Età(X)",
     y = "Media_Attacchi(Y)"
   )
@@ -228,7 +228,7 @@ Dal grafico emerge la presenza di un valore anomalo che influenza sensibilmente 
 
 ## Analisi della correlazione
 Dopo la rimozione dell'outlier viene calcolato il coefficiente di correlazione di Pearson.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 dati_senza_outlier <- dati_regressione %>% filter(Attacchi < 20)
 cor.test(dati_senza_outlier$Età, dati_senza_outlier$Attacchi)
 ```
@@ -238,7 +238,7 @@ Il coefficiente di correlazione risulta negativo e statisticamente significativo
 
 ## Modello di regressione lineare
 Per quantificare la relazione osservata viene stimato un modello di regressione lineare semplice.
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 
 modello_lineare <- lm(Attacchi ~ Età, data = dati_senza_outlier)
 summary(modello_lineare)
